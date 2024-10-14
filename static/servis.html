@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yemek Tarifleri</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f8f8;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            display: flex;
+            max-width: 1200px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .container-filter {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .sidebar {
+            flex: 1;
+            padding-right: 20px;
+            border-right: 1px solid #ddd;
+        }
+
+        .content-area {
+            flex: 2;
+            padding-left: 20px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        #searchBar {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        /* Tarif isimleri için */
+        .sidebar li {
+            background: #ececec;
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .sidebar li:hover {
+            background: #ddd;
+        }
+
+        /* Malzemeler ve Yapılış için */
+        .content-area ul,
+        .content-area ol {
+            list-style-position: inside;
+            padding-left: 4;
+        }
+
+        .content-area ul li,
+        .content-area ol li {
+            background: none;
+            margin: 5px 0;
+            padding: 0;
+            border-radius: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container-filter">
+        <h1>Yemek Tarifleri</h1>
+        <input type="text" id="searchBar" placeholder="Tarif arayın...">
+    </div>
+    <div class="container">
+        <div class="sidebar">
+            <ul id="recipeList">
+                <!-- Tarif isimleri burada gösterilecek -->
+            </ul>
+        </div>
+        <div class="content-area" id="recipeContent">
+            <!-- Tarif detayları burada gösterilecek -->
+        </div>
+    </div>
+
+    <script>
+        const searchBar = document.getElementById('searchBar');
+        const recipeList = document.getElementById('recipeList');
+        const recipeContent = document.getElementById('recipeContent');
+
+        searchBar.addEventListener('input', function () {
+            const userInput = searchBar.value;
+
+            fetch(`http://localhost:8000/chatbot?user_input=${encodeURIComponent(userInput)}`)
+                .then(response => response.json())
+                .then(data => {
+                    displayRecipes(data.message);
+                });
+        });
+
+        function displayRecipes(data) {
+            recipeList.innerHTML = '';
+            recipeContent.innerHTML = '';
+
+            data[0].forEach((recipeName, index) => {
+                const listItem = document.createElement('li');
+                listItem.textContent = recipeName;
+                listItem.addEventListener('click', () => displayRecipeDetails(data, index));
+                recipeList.appendChild(listItem);
+            });
+        }
+
+        function displayRecipeDetails(data, index) {
+            recipeContent.innerHTML = `
+            <h2>${data[0][index]}</h2>
+            <h3>Malzemeler:</h3>
+            <ul>
+                ${data[2][index].map(item => `<li>${item}</li>`).join('')}
+            </ul>
+            <h3>Yapılışı:</h3>
+            <ol>
+                ${data[1][index].map(step => `<li>${step}</li>`).join('')}
+            </ol>
+        `;
+        }
+    </script>
+
+</body>
+
+</html>
