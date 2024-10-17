@@ -8,6 +8,9 @@ This project allows you to quickly and easily search for and view recipes. Users
 - **Detailed Recipe View**: When a recipe is selected, the list of ingredients and cooking steps are displayed.
 - **Fast Search with Elasticsearch**: Recipes are indexed using Elasticsearch, allowing for quick retrieval of search results.
 
+![Recipe Site Example](Resimler/Resim1.png)
+![Recipe Site Example](Resimler/Resim2.png)
+
 ## Installation
 
 Follow these steps to run the project:
